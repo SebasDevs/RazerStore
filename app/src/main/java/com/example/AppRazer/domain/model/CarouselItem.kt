@@ -1,4 +1,4 @@
-package com.example.AppRazer.ui.theme.funciones
+package com.example.AppRazer.domain.model
 
 data class CarouselItem(
     val title: String,

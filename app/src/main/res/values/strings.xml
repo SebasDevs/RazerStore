@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Ep1</string>
+    <string name="app_name">AppRazer</string>
+
+    <string name="default_web_client_id">
+        811864427956-hvol3n1n1d8155mcenjpfljd48rvtadi.apps.googleusercontent.com
+    </string>
 </resources>
