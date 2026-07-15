@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -60,13 +62,10 @@ import com.example.AppRazer.data.model.ProductRepository
 import com.example.AppRazer.presentation.navigation.Screen
 import com.example.AppRazer.presentation.screens.cart.CartState
 import com.example.AppRazer.presentation.screens.home.ProductInfo
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
     navController: NavController,
@@ -91,7 +90,7 @@ fun ProductDetailScreen(
         product?.imageUrl ?: "",
         product?.imageUrl ?: ""
     )
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { images.size }
 
     if (product == null) {
         Box(
@@ -175,7 +174,6 @@ fun ProductDetailScreen(
                         .height(300.dp)
                 ) {
                     HorizontalPager(
-                        count = images.size,
                         state = pagerState,
                         modifier = Modifier.fillMaxSize()
                     ) { page ->

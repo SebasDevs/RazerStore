@@ -1,19 +1,58 @@
 package com.example.AppRazer.presentation.screens.search
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Chair
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.Laptop
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Mouse
+import androidx.compose.material.icons.filled.NorthWest
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,7 +62,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -40,7 +78,15 @@ import kotlinx.coroutines.delay
 fun SearchScreen(navController: NavController) {
     var query by remember { mutableStateOf("") }
     var results by remember { mutableStateOf<List<ProductInfo>>(emptyList()) }
-    var recentSearches by remember { mutableStateOf(listOf("Razer Blade", "Cobra Pro", "BlackWidow")) }
+    var recentSearches by remember {
+        mutableStateOf(
+            listOf(
+                "Razer Blade",
+                "Cobra Pro",
+                "BlackWidow"
+            )
+        )
+    }
     var isSearching by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -74,6 +120,7 @@ fun SearchScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color(0xFF111111))
+                .statusBarsPadding()
                 .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -134,12 +181,16 @@ fun SearchScreen(navController: NavController) {
 
             // Sin query — mostrar búsquedas recientes y categorías
             query.isEmpty() -> {
-                LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                LazyColumn(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)) {
 
                     // Búsquedas recientes
                     item {
-                        Text("BÚSQUEDAS RECIENTES", color = Color.Gray, fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                        Text(
+                            "BÚSQUEDAS RECIENTES", color = Color.Gray, fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold, letterSpacing = 1.sp
+                        )
                         Spacer(modifier = Modifier.height(12.dp))
                     }
 
@@ -153,21 +204,27 @@ fun SearchScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.History, null,
-                                    tint = Color.Gray, modifier = Modifier.size(18.dp))
+                                Icon(
+                                    Icons.Default.History, null,
+                                    tint = Color.Gray, modifier = Modifier.size(18.dp)
+                                )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(search, color = Color.White, fontSize = 15.sp)
                             }
-                            Icon(Icons.Default.NorthWest, null,
-                                tint = Color.Gray, modifier = Modifier.size(16.dp))
+                            Icon(
+                                Icons.Default.NorthWest, null,
+                                tint = Color.Gray, modifier = Modifier.size(16.dp)
+                            )
                         }
                         Divider(color = Color(0xFF1A1A1A))
                     }
 
                     item {
                         Spacer(modifier = Modifier.height(24.dp))
-                        Text("CATEGORÍAS POPULARES", color = Color.Gray, fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                        Text(
+                            "CATEGORÍAS POPULARES", color = Color.Gray, fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold, letterSpacing = 1.sp
+                        )
                         Spacer(modifier = Modifier.height(12.dp))
                     }
 
@@ -195,7 +252,12 @@ fun SearchScreen(navController: NavController) {
                                     .background(Color(0xFF1A1A1A), RoundedCornerShape(8.dp)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(icon, null, tint = Color.Green, modifier = Modifier.size(18.dp))
+                                Icon(
+                                    icon,
+                                    null,
+                                    tint = Color.Green,
+                                    modifier = Modifier.size(18.dp)
+                                )
                             }
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(name, color = Color.White, fontSize = 15.sp)
@@ -211,14 +273,20 @@ fun SearchScreen(navController: NavController) {
             results.isEmpty() -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.SearchOff, null,
-                            tint = Color.Gray, modifier = Modifier.size(64.dp))
+                        Icon(
+                            Icons.Default.SearchOff, null,
+                            tint = Color.Gray, modifier = Modifier.size(64.dp)
+                        )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text("Sin resultados para \"$query\"",
-                            color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Sin resultados para \"$query\"",
+                            color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Intenta con otro término",
-                            color = Color.Gray, fontSize = 14.sp)
+                        Text(
+                            "Intenta con otro término",
+                            color = Color.Gray, fontSize = 14.sp
+                        )
                     }
                 }
             }
@@ -231,8 +299,10 @@ fun SearchScreen(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     item {
-                        Text("${results.size} resultado${if (results.size != 1) "s" else ""} para \"$query\"",
-                            color = Color.Gray, fontSize = 13.sp)
+                        Text(
+                            "${results.size} resultado${if (results.size != 1) "s" else ""} para \"$query\"",
+                            color = Color.Gray, fontSize = 13.sp
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
@@ -281,13 +351,17 @@ fun SearchResultCard(product: ProductInfo, navController: NavController) {
 
             // Info
             Column(modifier = Modifier.weight(1f)) {
-                Text(product.title, color = Color.White, fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold, maxLines = 2)
+                Text(
+                    product.title, color = Color.White, fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold, maxLines = 2
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(product.subtitle, color = Color.Gray, fontSize = 12.sp, maxLines = 1)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(product.price.replace("\n", " "),
-                    color = Color.Green, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    product.price.replace("\n", " "),
+                    color = Color.Green, fontSize = 14.sp, fontWeight = FontWeight.Bold
+                )
             }
 
             Icon(Icons.Default.ChevronRight, null, tint = Color.Gray)

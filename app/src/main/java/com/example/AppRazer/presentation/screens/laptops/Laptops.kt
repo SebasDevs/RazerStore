@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,10 +52,6 @@ import com.example.AppRazer.presentation.screens.home.Cabecera
 import com.example.AppRazer.presentation.screens.home.CarouselCardDoble
 import com.example.AppRazer.presentation.screens.home.CarouselCardQuinto
 import com.example.AppRazer.presentation.screens.home.CarouselCardSexto
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -138,10 +136,8 @@ fun Laptops(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CarouselCard2() {
-    val pagerState = rememberPagerState(initialPage = 1)
     val sliderList = listOf(
         "https://i.ibb.co/W0s74zB/zonade.png",
         "https://i.ibb.co/rHPKGs2/laptop.png",
@@ -154,11 +150,22 @@ fun CarouselCard2() {
         "https://i.ibb.co/TgRnrtQ/swtch.png",
         "https://i.ibb.co/JRv069t/ropa.png"
     )
-    val textList = listOf("Zona de Juego", "Laptops", "Ratones", "Teclados", "Auriculares", "Camaras", "Sillas", "Mando", "Móvil", "Ropa y Equipo")
+    val textList = listOf(
+        "Zona de Juego",
+        "Laptops",
+        "Ratones",
+        "Teclados",
+        "Auriculares",
+        "Camaras",
+        "Sillas",
+        "Mando",
+        "Móvil",
+        "Ropa y Equipo"
+    )
+    val pagerState = rememberPagerState(initialPage = 1) { sliderList.size }
 
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
-            count = sliderList.size,
             state = pagerState,
             contentPadding = PaddingValues(horizontal = 120.dp),
             modifier = Modifier.height(150.dp)
@@ -168,7 +175,8 @@ fun CarouselCard2() {
                 colors = CardDefaults.cardColors(containerColor = Color.Black),
                 modifier = Modifier
                     .graphicsLayer {
-                        val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                        val pageOffset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
                         lerp(
                             start = 0.75f,
                             stop = 1f,
@@ -180,7 +188,9 @@ fun CarouselCard2() {
                             fraction = 1f - pageOffset.coerceIn(0f, 1f)
                         )
                     }
-                    .aspectRatio(1f).height(250.dp).width(160.dp)
+                    .aspectRatio(1f)
+                    .height(250.dp)
+                    .width(160.dp)
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -191,13 +201,16 @@ fun CarouselCard2() {
                         model = ImageRequest.Builder(LocalContext.current).data(sliderList[page])
                             .crossfade(true).scale(Scale.FILL).build(),
                         contentDescription = null,
-                        modifier = Modifier.weight(1f).clickable {}
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable {}
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = textList[page],
                         color = Color.White,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
                             .padding(bottom = 8.dp)
                     )
                 }
@@ -206,10 +219,8 @@ fun CarouselCard2() {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CarouselCardSegundo2() {
-    val pagerState = rememberPagerState(initialPage = 0)
     val sliderList = listOf(
         "https://i.ibb.co/RcYVWZf/1.png",
         "https://i.ibb.co/y8yXVBw/2.png",
@@ -218,20 +229,21 @@ fun CarouselCardSegundo2() {
         "https://i.ibb.co/FgDXCTn/5.png",
         "https://i.ibb.co/FgDXCTn/5.png"
     )
+    val pagerState = rememberPagerState(initialPage = 0) { sliderList.size }
 
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
-            count = sliderList.size,
             state = pagerState,
             contentPadding = PaddingValues(horizontal = 25.dp),
             modifier = Modifier.height(650.dp)
         ) { page ->
             Card(
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)),
                 modifier = Modifier
                     .graphicsLayer {
-                        val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                        val pageOffset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
                         lerp(
                             start = 0.75f,
                             stop = 1f,
@@ -254,7 +266,10 @@ fun CarouselCardSegundo2() {
                         model = ImageRequest.Builder(LocalContext.current).data(sliderList[page])
                             .crossfade(true).scale(Scale.FILL).build(),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().height(350.dp).clickable {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp)
+                            .clickable {},
                         contentScale = ContentScale.Crop
                     )
                     Spacer(modifier = Modifier.height(10.dp))
@@ -262,7 +277,9 @@ fun CarouselCardSegundo2() {
                         0 -> {
                             Box(modifier = Modifier.fillMaxSize()) {
                                 Column(
-                                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
                                 ) {
                                     Text(
                                         text = "Nuevo Razer Blade 14",
@@ -285,7 +302,9 @@ fun CarouselCardSegundo2() {
                                 onClick = {},
                                 shape = CutCornerShape(4.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(16.dp)
                             ) { Text(text = "COMPRAR", color = Color.Black) }
                             }
                         }
@@ -293,7 +312,9 @@ fun CarouselCardSegundo2() {
                         1 -> {
                             Box(modifier = Modifier.fillMaxSize()) {
                                 Column(
-                                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
                                 ) {
                                     Text(
                                         text = "Nuevo Razer Blade 15 (2023)",
@@ -310,9 +331,11 @@ fun CarouselCardSegundo2() {
                                 )
                                 }; Button(
                                 onClick = {},
-                                shape = androidx.compose.foundation.shape.CutCornerShape(4.dp),
+                                shape = CutCornerShape(4.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(16.dp)
                             ) { Text(text = "COMPRAR", color = Color.Black) }
                             }
                         }
@@ -320,7 +343,9 @@ fun CarouselCardSegundo2() {
                         2 -> {
                             Box(modifier = Modifier.fillMaxSize()) {
                                 Column(
-                                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
                                 ) {
                                     Text(
                                         text = "Nuevo Razer Blade 16",
@@ -341,9 +366,11 @@ fun CarouselCardSegundo2() {
                                 )
                                 }; Button(
                                 onClick = {},
-                                shape = androidx.compose.foundation.shape.CutCornerShape(4.dp),
+                                shape = CutCornerShape(4.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(16.dp)
                             ) { Text(text = "COMPRAR", color = Color.Black) }
                             }
                         }
@@ -351,7 +378,9 @@ fun CarouselCardSegundo2() {
                         3 -> {
                             Box(modifier = Modifier.fillMaxSize()) {
                                 Column(
-                                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
                                 ) {
                                     Text(
                                         text = "Nuevos Razer Blade 18 4K\nMercury",
@@ -372,9 +401,11 @@ fun CarouselCardSegundo2() {
                                 )
                                 }; Button(
                                 onClick = {},
-                                shape = androidx.compose.foundation.shape.CutCornerShape(4.dp),
+                                shape = CutCornerShape(4.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(16.dp)
                             ) { Text(text = "COMPRAR", color = Color.Black) }
                             }
                         }
@@ -382,7 +413,9 @@ fun CarouselCardSegundo2() {
                         4 -> {
                             Box(modifier = Modifier.fillMaxSize()) {
                                 Column(
-                                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
                                 ) {
                                     Text(
                                         text = "Nuevos Razer Blade 18 4K",
@@ -403,9 +436,11 @@ fun CarouselCardSegundo2() {
                                 )
                                 }; Button(
                                 onClick = {},
-                                shape = androidx.compose.foundation.shape.CutCornerShape(4.dp),
+                                shape = CutCornerShape(4.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(16.dp)
                             ) { Text(text = "COMPRAR", color = Color.Black) }
                             }
                         }
@@ -413,7 +448,9 @@ fun CarouselCardSegundo2() {
                         5 -> {
                             Box(modifier = Modifier.fillMaxSize()) {
                                 Column(
-                                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
                                 ) {
                                     Text(
                                         text = "Nuevos Razer Blade 18",
@@ -434,9 +471,11 @@ fun CarouselCardSegundo2() {
                                 )
                                 }; Button(
                                 onClick = {},
-                                shape = androidx.compose.foundation.shape.CutCornerShape(4.dp),
+                                shape = CutCornerShape(4.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(16.dp)
                             ) { Text(text = "COMPRAR", color = Color.Black) }
                             }
                         }
@@ -449,21 +488,20 @@ fun CarouselCardSegundo2() {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun CarouselCardTercero2(modifier: Modifier = Modifier.Companion) {
+fun CarouselCardTercero2(modifier: Modifier = Modifier) {
     val images = listOf(R.drawable.starr)
     val texts = listOf("DESCUBRE UNA GALAXIA DE\nOPORTUNIDADES")
-    val descriptions = listOf("OBTÉN STAR WARS OUTLAWS CON LA\nCOMPRA DE PRODUCTOS INTEL CORE DE\n14° GENERACIÓN QUE CUMPLAN LOS\nREQUISITOS. DESCUBRE UNA GALAXIA DE\nOPORTUNIDADES")
+    val descriptions =
+        listOf("OBTÉN STAR WARS OUTLAWS CON LA\nCOMPRA DE PRODUCTOS INTEL CORE DE\n14° GENERACIÓN QUE CUMPLAN LOS\nREQUISITOS. DESCUBRE UNA GALAXIA DE\nOPORTUNIDADES")
     val actions = listOf("Compra ahora>")
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { images.size }
     val scope = rememberCoroutineScope()
 
     Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Box(modifier = modifier.wrapContentSize()) {
             HorizontalPager(
                 state = pagerState,
-                count = images.size,
                 modifier = Modifier.fillMaxWidth()
             ) { currentPage ->
                 Column {
@@ -498,14 +536,19 @@ fun CarouselCardTercero2(modifier: Modifier = Modifier.Companion) {
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     Row(
-                        Modifier.height(50.dp).fillMaxWidth(),
+                        Modifier
+                            .height(50.dp)
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         repeat(images.size) {
                             val color =
                                 if (pagerState.currentPage == it) Color.Green else Color.White
                             Box(
-                                modifier = Modifier.padding(4.dp).clip(CircleShape).size(20.dp)
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .clip(CircleShape)
+                                    .size(20.dp)
                                     .background(color)
                                     .clickable { scope.launch { pagerState.animateScrollToPage(it) } })
                         }
@@ -516,25 +559,25 @@ fun CarouselCardTercero2(modifier: Modifier = Modifier.Companion) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CarouselCardCuarto2() {
-    val pagerState = rememberPagerState(initialPage = 0)
-    val sliderList = listOf("https://i.ibb.co/vJ9MBRj/laptopcase2-fotor-bg-remover-20240703104531.png")
+    val sliderList =
+        listOf("https://i.ibb.co/vJ9MBRj/laptopcase2-fotor-bg-remover-20240703104531.png")
+    val pagerState = rememberPagerState(initialPage = 0) { sliderList.size }
 
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
-            count = sliderList.size,
             state = pagerState,
             contentPadding = PaddingValues(horizontal = 25.dp),
             modifier = Modifier.height(650.dp)
         ) { page ->
             Card(
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)),
                 modifier = Modifier
                     .graphicsLayer {
-                        val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                        val pageOffset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
                         lerp(
                             start = 0.75f,
                             stop = 1f,
@@ -557,14 +600,19 @@ fun CarouselCardCuarto2() {
                         model = ImageRequest.Builder(LocalContext.current).data(sliderList[page])
                             .crossfade(true).scale(Scale.FILL).build(),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().height(350.dp).clickable {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp)
+                            .clickable {},
                         contentScale = ContentScale.Crop
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     when (page) {
                         0 -> {
                             Box(modifier = Modifier.fillMaxSize()) {
-                                Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                                Column(modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp)) {
                                     Text(
                                         text = "Razer Blade 2017 (2022)",
                                         style = TextStyle(fontSize = 20.sp, color = Color.White),
@@ -585,9 +633,11 @@ fun CarouselCardCuarto2() {
                                 }
                                 Button(
                                     onClick = {},
-                                    shape = androidx.compose.foundation.shape.CutCornerShape(4.dp),
+                                    shape = CutCornerShape(4.dp),
                                     colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                    modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                                    modifier = Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .padding(16.dp)
                                 ) {
                                     Text(text = "COMPRAR", color = Color.Black)
                                 }
