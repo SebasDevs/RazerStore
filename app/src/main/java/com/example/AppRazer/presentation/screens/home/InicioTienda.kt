@@ -25,17 +25,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -44,10 +47,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -85,11 +88,6 @@ import com.example.AppRazer.R
 import com.example.AppRazer.domain.model.CarouselItem
 import com.example.AppRazer.presentation.navigation.Screen
 import com.example.AppRazer.presentation.screens.cart.CartState
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -151,7 +149,6 @@ fun SectionText(text: String, color: Color, size: Int = 20) {
 }
 
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PagerDots(pagerState: PagerState, count: Int) {
     val scope = rememberCoroutineScope()
@@ -174,7 +171,6 @@ fun PagerDots(pagerState: PagerState, count: Int) {
 }
 
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun GenericCarousel(
     products: List<ProductInfo>,
@@ -182,10 +178,9 @@ fun GenericCarousel(
     height: Int = 650,
     paddingH: Int = 25
 ) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { products.size }
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
-            count = products.size,
             state = pagerState,
             contentPadding = PaddingValues(horizontal = paddingH.dp),
             modifier = Modifier.height(height.dp)
@@ -195,7 +190,8 @@ fun GenericCarousel(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)),
                 modifier = Modifier
                     .graphicsLayer {
-                        val offset = calculateCurrentOffsetForPage(page).absoluteValue
+                        val offset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
                         lerp(0.75f, 1f, 1f - offset.coerceIn(0f, 1f)).also {
                             scaleX = it; scaleY = it
                         }
@@ -292,10 +288,8 @@ fun InicioTienda(navController: NavController) {
 }
 
 // ── CarouselCard (iconos pequeños arriba)
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CarouselCard(carouselItems: List<CarouselItem>) {
-    val pagerState = rememberPagerState(initialPage = 1)
     val sliderList = listOf(
         "https://i.ibb.co/W0s74zB/zonade.png",
         "https://i.ibb.co/rHPKGs2/laptop.png",
@@ -312,10 +306,10 @@ fun CarouselCard(carouselItems: List<CarouselItem>) {
         "Zona de Juego", "Laptops", "Ratones", "Teclados",
         "Auriculares", "Camaras", "Sillas", "Mando", "Móvil", "Ropa y Equipo"
     )
+    val pagerState = rememberPagerState(initialPage = 1) { sliderList.size }
 
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
-            count = sliderList.size,
             state = pagerState,
             contentPadding = PaddingValues(horizontal = 120.dp),
             modifier = Modifier.height(150.dp)
@@ -326,7 +320,8 @@ fun CarouselCard(carouselItems: List<CarouselItem>) {
                 colors = CardDefaults.cardColors(containerColor = Color.Black),
                 modifier = Modifier
                     .graphicsLayer {
-                        val offset = calculateCurrentOffsetForPage(page).absoluteValue
+                        val offset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
                         lerp(0.75f, 1f, 1f - offset.coerceIn(0f, 1f)).also {
                             scaleX = it; scaleY = it
                         }
@@ -363,12 +358,8 @@ fun CarouselCard(carouselItems: List<CarouselItem>) {
 }
 
 // ── CarouselCardSegundo
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CarouselCardSegundo(navController: NavController) {
-    val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope()
-
     val products = listOf(
         ProductInfo(
             id = "blade14",
@@ -429,10 +420,12 @@ fun CarouselCardSegundo(navController: NavController) {
             imageUrl = "https://i.ibb.co/vZpkCH3/mouseblanco.png"
         )
     )
+    val pagerState = rememberPagerState { products.size }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState) {
         while (true) {
-            delay(3000)
+            delay(3500)
             if (!pagerState.isScrollInProgress) {
                 val nextPage = (pagerState.currentPage + 1) % products.size
                 pagerState.animateScrollToPage(
@@ -449,7 +442,6 @@ fun CarouselCardSegundo(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize()) {
             HorizontalPager(
-                count = products.size,
                 state = pagerState,
                 contentPadding = PaddingValues(horizontal = 15.dp),
                 modifier = Modifier
@@ -461,7 +453,8 @@ fun CarouselCardSegundo(navController: NavController) {
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)),
                     modifier = Modifier
                         .graphicsLayer {
-                            val offset = calculateCurrentOffsetForPage(page).absoluteValue
+                            val offset =
+                                ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
                             lerp(0.75f, 1f, 1f - offset.coerceIn(0f, 1f)).also {
                                 scaleX = it; scaleY = it
                             }
@@ -501,7 +494,13 @@ fun CarouselCardSegundo(navController: NavController) {
                     .align(Alignment.CenterStart)
                     .padding(16.dp)
                     .background(Color(0x80000000), CircleShape)
-            ) { Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Green) }
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = Color.Green
+                )
+            }
             IconButton(
                 onClick = {
                     scope.launch {
@@ -514,14 +513,19 @@ fun CarouselCardSegundo(navController: NavController) {
                     .align(Alignment.CenterEnd)
                     .padding(16.dp)
                     .background(Color(0x80000000), CircleShape)
-            ) { Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.Green) }
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = Color.Green
+                )
+            }
         }
         PagerDots(pagerState, products.size)
     }
 }
 
 // ── CarouselCardTercero
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CarouselCardTercero(modifier: Modifier = Modifier) {
     val images = listOf(R.drawable.p1, R.drawable.p3, R.drawable.p4)
@@ -532,13 +536,12 @@ fun CarouselCardTercero(modifier: Modifier = Modifier) {
         "SORTEO DE RAZERSTORE REWARDS"
     )
     val actions = listOf("Aprende más>", "Compra Ahora>", "Compra Ahora>")
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { images.size }
     val scope = rememberCoroutineScope()
 
     Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         HorizontalPager(
             state = pagerState,
-            count = images.size,
             modifier = Modifier.fillMaxWidth()
         ) { page ->
             Column {
@@ -567,7 +570,7 @@ fun CarouselCardTercero(modifier: Modifier = Modifier) {
                         )
                     ) {
                         Icon(
-                            Icons.Filled.KeyboardArrowRight,
+                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             tint = Color.Green
@@ -587,7 +590,7 @@ fun CarouselCardTercero(modifier: Modifier = Modifier) {
                         )
                     ) {
                         Icon(
-                            Icons.Filled.KeyboardArrowLeft,
+                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             tint = Color.Green
@@ -784,19 +787,18 @@ fun CarouselCardSexto(navController: NavController) {
 }
 
 // ── CarouselCardDoble
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CarouselCardDoble() {
-    val pagerState = rememberPagerState()
     val sliderList = listOf(
         "https://i.ibb.co/M5pVkJ8/descarga-11.png",
         "https://i.ibb.co/fSQtyFH/descarga-12.png"
     )
     val titles = listOf("RazerStore Rewards", "PROGRAMAS DE COMPRA")
+    val pagerState = rememberPagerState { sliderList.size }
 
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
-            count = sliderList.size, state = pagerState,
+            state = pagerState,
             contentPadding = PaddingValues(horizontal = 65.dp), modifier = Modifier.height(300.dp)
         ) { page ->
             Card(
@@ -804,7 +806,8 @@ fun CarouselCardDoble() {
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)),
                 modifier = Modifier
                     .graphicsLayer {
-                        val offset = calculateCurrentOffsetForPage(page).absoluteValue
+                        val offset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
                         lerp(0.75f, 1f, 1f - offset.coerceIn(0f, 1f)).also {
                             scaleX = it; scaleY = it
                         }
@@ -843,7 +846,6 @@ fun CarouselCardDoble() {
     }
 }
 
-// ── Cabecera
 // ── Cabecera
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -967,23 +969,32 @@ fun Cabecera(
                             .size(50.dp)
                             .weight(1f)
                     )
-                    // ── Carrito con badge ─────────────────────────
-                    Box {
+                    // ── Lupa + Carrito con badge ───────────────────────
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            Icons.Default.ShoppingCart, contentDescription = null,
+                            Icons.Default.Search, contentDescription = "Buscar",
                             tint = Color.White,
-                            modifier = Modifier.clickable { navController.navigate(Screen.Cart.route) })
-                        if (CartState.itemCount > 0) {
-                            Badge(
-                                modifier = Modifier.align(Alignment.TopEnd),
-                                containerColor = Color.Green,
-                                contentColor = Color.Black
-                            ) {
-                                Text(
-                                    "${CartState.itemCount}",
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                            modifier = Modifier
+                                .clickable { navController.navigate(Screen.Search.route) }
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Box {
+                            Icon(
+                                Icons.Default.ShoppingCart, contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.clickable { navController.navigate(Screen.Cart.route) })
+                            if (CartState.itemCount > 0) {
+                                Badge(
+                                    modifier = Modifier.align(Alignment.TopEnd),
+                                    containerColor = Color.Green,
+                                    contentColor = Color.Black
+                                ) {
+                                    Text(
+                                        "${CartState.itemCount}",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
                     }
@@ -1023,7 +1034,11 @@ fun Foot() {
             "Asistencia" to "Texto3", "Empresa" to "Texto4"
         ).forEach { (title, content) ->
             Section(title, content)
-            Divider(color = Color.White, thickness = 1.dp, modifier = Modifier.fillMaxWidth())
+            HorizontalDivider(
+                color = Color.White,
+                thickness = 1.dp,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -1031,7 +1046,7 @@ fun Foot() {
             color = Color.White, fontSize = 12.sp, textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Divider(color = Color.White, thickness = 1.dp, modifier = Modifier.fillMaxWidth())
+        HorizontalDivider(color = Color.White, thickness = 1.dp, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             "Spain (España) Cambiar Ubicación",
