@@ -74,10 +74,7 @@ dependencies {
     // ── Coil (imágenes) ───────────────────────────────────────────
     implementation("io.coil-kt:coil-compose:2.5.0")
 
-    // ── Accompanist Pager ─────────────────────────────────────────
-    implementation("com.google.accompanist:accompanist-pager:0.32.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
-
+    implementation("androidx.preference:preference-ktx:1.2.1")
     // ── Firebase ──────────────────────────────────────────────────
     implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
     implementation("com.google.firebase:firebase-auth-ktx")
@@ -112,6 +109,14 @@ dependencies {
 
     // ── Volley ────────────────────────────────────────────────────
     implementation(libs.volley)
+
+    // ── DataStore (carrito de invitado local) ───────────────────────
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // ── Mapa (OpenStreetMap, sin API key) ────────────────────────────
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
+// ── Ubicación GPS (Google Play Services) ─────────────────
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // ── Tests ─────────────────────────────────────────────────────
     testImplementation(libs.junit)

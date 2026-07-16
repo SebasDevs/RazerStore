@@ -2,6 +2,8 @@ package com.example.AppRazer.presentation.screens.product
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.AppRazer.data.local.GuestCartRepository
+import com.example.AppRazer.data.remote.firebase.auth.AuthRepository
 import com.example.AppRazer.data.remote.firebase.firestore.CartRepository
 import com.example.AppRazer.presentation.screens.cart.CartItem
 import com.example.AppRazer.presentation.screens.cart.CartState
@@ -17,16 +19,20 @@ data class ProductDetailUiState(
     val selectedColor: String = "Negro",
     val isAddingToCart: Boolean = false,
     val addedToCart: Boolean = false,
-    val navigateToCart: Boolean = false   // 👈 nuevo: evento de navegación
+    val navigateToCart: Boolean = false
 )
 
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
+    private val guestCartRepository: GuestCartRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductDetailUiState())
     val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
+
+    private val isLoggedIn get() = authRepository.isLoggedIn
 
     fun selectColor(color: String) {
         _uiState.update { it.copy(selectedColor = color) }
@@ -45,9 +51,13 @@ class ProductDetailViewModel @Inject constructor(
                 imageUrl = imageUrl
             )
             CartState.addItem(item)
-            cartRepository.addItem(item) // guarda en Firestore
 
-            
+            if (isLoggedIn) {
+                cartRepository.addItem(item)
+            } else {
+                guestCartRepository.saveCart(CartState.items.toList())
+            }
+
             _uiState.update {
                 it.copy(isAddingToCart = false, addedToCart = true, navigateToCart = true)
             }

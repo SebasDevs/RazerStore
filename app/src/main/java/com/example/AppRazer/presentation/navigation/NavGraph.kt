@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.AppRazer.presentation.screens.SplashScreen
+import com.example.AppRazer.presentation.screens.addresses.AddressesScreen
 import com.example.AppRazer.presentation.screens.auth.forgot.ForgotScreen
 import com.example.AppRazer.presentation.screens.auth.login.LoginScreen
 import com.example.AppRazer.presentation.screens.auth.register.RegisterScreen
@@ -29,11 +30,17 @@ import com.example.AppRazer.presentation.screens.cart.CheckoutScreen
 import com.example.AppRazer.presentation.screens.home.InicioTienda
 import com.example.AppRazer.presentation.screens.laptops.Laptops
 import com.example.AppRazer.presentation.screens.movil.SeccionParaMovil
+import com.example.AppRazer.presentation.screens.notifications.NotificationsScreen
+import com.example.AppRazer.presentation.screens.payment.PaymentMethodsScreen
 import com.example.AppRazer.presentation.screens.pc.SeccionParaPC
 import com.example.AppRazer.presentation.screens.product.ProductDetailScreen
+import com.example.AppRazer.presentation.screens.products.CategoryProductsScreen
 import com.example.AppRazer.presentation.screens.profile.OrdersScreen
 import com.example.AppRazer.presentation.screens.profile.ProfileScreen
 import com.example.AppRazer.presentation.screens.search.SearchScreen
+import com.example.AppRazer.presentation.screens.security.SecurityScreen
+import com.example.AppRazer.presentation.screens.settings.SettingsScreen
+import com.example.AppRazer.presentation.screens.wishlist.WishlistScreen
 
 
 // Slide desde la derecha (navegación hacia adelante)
@@ -270,6 +277,78 @@ fun NavGraph() {
             popExitTransition = { slideOutVertically(tween(300)) + fadeOut(tween(300)) }
         ) {
             SearchScreen(navController)
+        }
+
+        // ── Wishlist
+        composable(
+            route = Screen.Wishlist.route,
+            enterTransition = { enterFromRight() },
+            exitTransition = { exitToLeft() },
+            popEnterTransition = { enterFromLeft() },
+            popExitTransition = { exitToRight() }
+        ) {
+            WishlistScreen(navController)
+        }
+        // ── Category Products (con filtros) ──────────────────────────
+        composable(
+            route = Screen.CategoryProducts.route,
+            arguments = listOf(navArgument("category") { type = NavType.StringType }),
+            enterTransition = { enterFromRight() },
+            exitTransition = { exitToLeft() },
+            popEnterTransition = { enterFromLeft() },
+            popExitTransition = { exitToRight() }
+        ) {
+            CategoryProductsScreen(navController)
+        }
+        // Settings
+        composable(
+            route = Screen.Settings.route,
+            enterTransition = { enterFromRight() },
+            exitTransition = { exitToLeft() },
+            popEnterTransition = { enterFromLeft() },
+            popExitTransition = { exitToRight() }
+        ) {
+            SettingsScreen(navController)
+        }
+        // Security
+        composable(
+            route = Screen.Security.route,
+            enterTransition = { enterFromRight() },
+            exitTransition = { exitToLeft() },
+            popEnterTransition = { enterFromLeft() },
+            popExitTransition = { exitToRight() }
+        ) {
+            SecurityScreen(navController)
+        }
+        // Notifications
+        composable(
+            route = Screen.Notifications.route,
+            enterTransition = { enterFromRight() },
+            exitTransition = { exitToLeft() },
+            popEnterTransition = { enterFromLeft() },
+            popExitTransition = { exitToRight() }
+        ) {
+            NotificationsScreen(navController)
+        }
+        // Payment Methods
+        composable(
+            route = Screen.PaymentMethods.route,
+            enterTransition = { enterFromRight() },
+            exitTransition = { exitToLeft() },
+            popEnterTransition = { enterFromLeft() },
+            popExitTransition = { exitToRight() }
+        ) {
+            PaymentMethodsScreen(navController)
+        }
+        //Adresses
+        composable(
+            route = Screen.Addresses.route,
+            enterTransition = { enterFromRight() },
+            exitTransition = { exitToLeft() },
+            popEnterTransition = { enterFromLeft() },
+            popExitTransition = { exitToRight() }
+        ) {
+            AddressesScreen(navController)
         }
 
         // ── Pantallas vacías

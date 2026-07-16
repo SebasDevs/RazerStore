@@ -2,8 +2,11 @@ package com.example.AppRazer.presentation.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.AppRazer.data.local.GuestCartRepository
 import com.example.AppRazer.data.remote.firebase.auth.AuthRepository
 import com.example.AppRazer.data.remote.firebase.firestore.OrderRepository
+import com.example.AppRazer.presentation.screens.cart.CartState
+import com.example.AppRazer.presentation.screens.wishlist.WishlistState
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +26,8 @@ data class ProfileUiState(
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val guestCartRepository: GuestCartRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState(user = authRepository.currentUser))
@@ -39,6 +43,11 @@ class ProfileViewModel @Inject constructor(
 
     fun logout() {
         authRepository.logout()
+        CartState.clearCart()
+        WishlistState.setAll(emptySet())
+        viewModelScope.launch {
+            guestCartRepository.clearCart()
+        }
         _uiState.update { it.copy(loggedOut = true) }
     }
 }

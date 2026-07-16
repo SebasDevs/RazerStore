@@ -2,7 +2,11 @@ package com.example.AppRazer.presentation.screens.auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.AppRazer.data.local.GuestCartRepository
+import com.example.AppRazer.data.local.GuestWishlistRepository
 import com.example.AppRazer.data.remote.firebase.auth.AuthRepository
+import com.example.AppRazer.data.remote.firebase.firestore.CartRepository
+import com.example.AppRazer.data.remote.firebase.firestore.WishlistRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +27,11 @@ data class LoginUiState(
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val cartRepository: CartRepository,
+    private val wishlistRepository: WishlistRepository,
+    private val guestWishlistRepository: GuestWishlistRepository,
+    private val guestCartRepository: GuestCartRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -49,6 +57,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, errorMessage = "") }
             val result = authRepository.loginWithEmail(state.email, state.password)
             if (result.isSuccess) {
+                mergeGuestCart()
                 _uiState.update { it.copy(isLoading = false, loginSuccess = true) }
             } else {
                 val message = when {
@@ -66,6 +75,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, errorMessage = "") }
             val result = authRepository.loginWithGoogle(idToken)
             if (result.isSuccess) {
+                mergeGuestCart()
                 _uiState.update { it.copy(isLoading = false, loginSuccess = true) }
             } else {
                 _uiState.update {
@@ -75,6 +85,19 @@ class LoginViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    private suspend fun mergeGuestCart() {
+        val guestItems = guestCartRepository.getCart()
+        if (guestItems.isNotEmpty()) {
+            cartRepository.mergeGuestCart(guestItems)
+            guestCartRepository.clearCart()
+        }
+        val guestFavorites = guestWishlistRepository.getWishlist()
+        if (guestFavorites.isNotEmpty()) {
+            wishlistRepository.mergeGuestWishlist(guestFavorites)
+            guestWishlistRepository.clearWishlist()
         }
     }
 

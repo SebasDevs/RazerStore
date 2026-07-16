@@ -48,10 +48,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
 import com.example.AppRazer.R
+import com.example.AppRazer.data.model.ProductRepository
+import com.example.AppRazer.presentation.navigation.Screen
 import com.example.AppRazer.presentation.screens.home.Cabecera
 import com.example.AppRazer.presentation.screens.home.CarouselCardDoble
 import com.example.AppRazer.presentation.screens.home.CarouselCardQuinto
 import com.example.AppRazer.presentation.screens.home.CarouselCardSexto
+import com.example.AppRazer.presentation.screens.home.GenericCarousel
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -76,6 +79,17 @@ fun Laptops(navController: NavController) {
                 style = TextStyle(fontSize = 16.sp, color = Color.Gray),
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 1.dp)
             )
+            Spacer(modifier = Modifier.height(12.dp))
+            androidx.compose.material3.OutlinedButton(
+                onClick = { navController.navigate(Screen.CategoryProducts.createRoute("laptops")) },
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .fillMaxWidth(),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color.Green)
+            ) {
+                Text("VER TODOS LOS PORTÁTILES Y FILTROS", color = Color.Green, fontSize = 13.sp)
+            }
             Spacer(modifier = Modifier.height(30.dp))
             Text(
                 text = "PORTÁTILES GEFORCE RTX™ SERIE 40",
@@ -88,7 +102,7 @@ fun Laptops(navController: NavController) {
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
             Spacer(modifier = Modifier.height(15.dp))
-            CarouselCardSegundo2()
+            CarouselCardSegundo2(navController)
             Spacer(modifier = Modifier.height(30.dp))
             CarouselCardTercero2()
             Spacer(modifier = Modifier.height(5.dp))
@@ -220,272 +234,20 @@ fun CarouselCard2() {
 }
 
 @Composable
-fun CarouselCardSegundo2() {
-    val sliderList = listOf(
-        "https://i.ibb.co/RcYVWZf/1.png",
-        "https://i.ibb.co/y8yXVBw/2.png",
-        "https://i.ibb.co/v3VrnWQ/3.png",
-        "https://i.ibb.co/Mh5YD80/4.png",
-        "https://i.ibb.co/FgDXCTn/5.png",
-        "https://i.ibb.co/FgDXCTn/5.png"
+fun CarouselCardSegundo2(navController: NavController) {
+    GenericCarousel(
+        products = listOf(
+            ProductRepository.getById("blade14")!!,
+            ProductRepository.getById("blade15_2023")!!,
+            ProductRepository.getById("blade16")!!,
+            ProductRepository.getById("blade18_4k_mercury")!!,
+            ProductRepository.getById("blade18_4k")!!,
+            ProductRepository.getById("blade18_qhd")!!
+        ),
+        navController = navController,
+        height = 650,
+        paddingH = 25
     )
-    val pagerState = rememberPagerState(initialPage = 0) { sliderList.size }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        HorizontalPager(
-            state = pagerState,
-            contentPadding = PaddingValues(horizontal = 25.dp),
-            modifier = Modifier.height(650.dp)
-        ) { page ->
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)),
-                modifier = Modifier
-                    .graphicsLayer {
-                        val pageOffset =
-                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
-                        lerp(
-                            start = 0.75f,
-                            stop = 1f,
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        ).also { scale -> scaleX = scale; scaleY = scale }
-                        alpha = lerp(
-                            start = 0.6f,
-                            stop = 1f,
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        )
-                    }
-                    .fillMaxSize()
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current).data(sliderList[page])
-                            .crossfade(true).scale(Scale.FILL).build(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(350.dp)
-                            .clickable {},
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    when (page) {
-                        0 -> {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp)
-                                ) {
-                                    Text(
-                                        text = "Nuevo Razer Blade 14",
-                                        style = TextStyle(fontSize = 20.sp, color = Color.White),
-                                        modifier = Modifier.padding(bottom = 9.dp)
-                                    ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Portátil gaming ultrapotente y ultraportátil de 14\ncon procesador AMD Ryzen™ 98945HS y tarjeta gráfica NVIDIA® GeForce RTX™ serie 40",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Ahora disponible en un elegante acabado\nMercury o negro mate.",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(50.dp)); Text(
-                                    text = "Desde\n2.499,99 €",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                )
-                                }; Button(
-                                onClick = {},
-                                shape = CutCornerShape(4.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(16.dp)
-                            ) { Text(text = "COMPRAR", color = Color.Black) }
-                            }
-                        }
-
-                        1 -> {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp)
-                                ) {
-                                    Text(
-                                        text = "Nuevo Razer Blade 15 (2023)",
-                                        style = TextStyle(fontSize = 20.sp, color = Color.White),
-                                        modifier = Modifier.padding(bottom = 9.dp)
-                                    ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Portátil NVIDIA® GeForce RTX™ serie 40 de\n15' con procesador Intel® Core™ i7 de 13ª\ngeneración (14 núcleos)",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(80.dp)); Text(
-                                    text = "Desde\n2.199,99 €",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                )
-                                }; Button(
-                                onClick = {},
-                                shape = CutCornerShape(4.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(16.dp)
-                            ) { Text(text = "COMPRAR", color = Color.Black) }
-                            }
-                        }
-
-                        2 -> {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp)
-                                ) {
-                                    Text(
-                                        text = "Nuevo Razer Blade 16",
-                                        style = TextStyle(fontSize = 20.sp, color = Color.White),
-                                        modifier = Modifier.padding(bottom = 9.dp)
-                                    ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Portátil gaming de 16\" de alto rendimiento\ncon pantalla OLED a 240 Hz",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Consigue el juego Star Wars Outlaw™ al\ncomprar un portátil con procesador Intel®\nCore™ i9-14900HX.",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(50.dp)); Text(
-                                    text = "Desde\n3.499,99 €",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                )
-                                }; Button(
-                                onClick = {},
-                                shape = CutCornerShape(4.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(16.dp)
-                            ) { Text(text = "COMPRAR", color = Color.Black) }
-                            }
-                        }
-
-                        3 -> {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp)
-                                ) {
-                                    Text(
-                                        text = "Nuevos Razer Blade 18 4K\nMercury",
-                                        style = TextStyle(fontSize = 20.sp, color = Color.White),
-                                        modifier = Modifier.padding(bottom = 9.dp)
-                                    ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Portátil gaming de 18\" de alto rendimiento\ncon pantalla 4K a 200 Hz",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Modelo 4K Disponible en Breve",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(130.dp)); Text(
-                                    text = "Desde\n5.199,99 €",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                )
-                                }; Button(
-                                onClick = {},
-                                shape = CutCornerShape(4.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(16.dp)
-                            ) { Text(text = "COMPRAR", color = Color.Black) }
-                            }
-                        }
-
-                        4 -> {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp)
-                                ) {
-                                    Text(
-                                        text = "Nuevos Razer Blade 18 4K",
-                                        style = TextStyle(fontSize = 20.sp, color = Color.White),
-                                        modifier = Modifier.padding(bottom = 9.dp)
-                                    ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Portátil gaming de 18\" de alto rendimiento\ncon pantalla 4K a 200 Hz",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Modelo 4K Disponible en Breve",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(110.dp)); Text(
-                                    text = "Desde\n5.399,99 €",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                )
-                                }; Button(
-                                onClick = {},
-                                shape = CutCornerShape(4.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(16.dp)
-                            ) { Text(text = "COMPRAR", color = Color.Black) }
-                            }
-                        }
-
-                        5 -> {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp)
-                                ) {
-                                    Text(
-                                        text = "Nuevos Razer Blade 18",
-                                        style = TextStyle(fontSize = 20.sp, color = Color.White),
-                                        modifier = Modifier.padding(bottom = 9.dp)
-                                    ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Portátil gaming de 18\" de alto rendimiento\ncon pantalla QHD+ Mini-LED a 240 Hz",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(9.dp)); Text(
-                                    text = "Consigue el juego Star Wars Outlaw™ al\ncomprar un portátil con procesador Intel®\nCore™ i9-14900HX.",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                ); Spacer(modifier = Modifier.height(30.dp)); Text(
-                                    text = "Desde\n3.599,99 €",
-                                    style = TextStyle(fontSize = 14.sp, color = Color.White),
-                                    modifier = Modifier.padding(bottom = 9.dp)
-                                )
-                                }; Button(
-                                onClick = {},
-                                shape = CutCornerShape(4.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(16.dp)
-                            ) { Text(text = "COMPRAR", color = Color.Black) }
-                            }
-                        }
-
-                        else -> {}
-                    }
-                }
-            }
-        }
-    }
 }
 
 @Composable
@@ -610,9 +372,11 @@ fun CarouselCardCuarto2() {
                     when (page) {
                         0 -> {
                             Box(modifier = Modifier.fillMaxSize()) {
-                                Column(modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(16.dp)) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
+                                ) {
                                     Text(
                                         text = "Razer Blade 2017 (2022)",
                                         style = TextStyle(fontSize = 20.sp, color = Color.White),

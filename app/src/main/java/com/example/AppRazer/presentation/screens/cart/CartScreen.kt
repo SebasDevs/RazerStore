@@ -43,8 +43,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -106,6 +108,7 @@ fun CartScreen(
     navController: NavController,
     viewModel: CartViewModel = hiltViewModel()
 ) {
+    val haptic = LocalHapticFeedback.current
     val cartItems = CartState.items
     val total = CartState.total
     val isLoading by viewModel.isLoading.collectAsState()
@@ -193,9 +196,18 @@ fun CartScreen(
                 items(cartItems, key = { it.id }) { item ->
                     CartItemCard(
                         item = item,
-                        onIncrease = { viewModel.increaseQuantity(item) },
-                        onDecrease = { viewModel.decreaseQuantity(item) },
-                        onRemove = { viewModel.removeItem(item) }
+                        onIncrease = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.increaseQuantity(item)
+                        },
+                        onDecrease = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.decreaseQuantity(item)
+                        },
+                        onRemove = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.removeItem(item)
+                        }
                     )
                 }
             }

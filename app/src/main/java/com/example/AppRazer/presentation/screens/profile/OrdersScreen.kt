@@ -15,14 +15,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -62,13 +62,13 @@ fun OrdersScreen(
             colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black),
             navigationIcon = {
                 IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.Default.ArrowBack, null, tint = Color.White)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White)
                 }
             },
             title = { Text("Mis pedidos", color = Color.White, fontWeight = FontWeight.Bold) }
         )
 
-        Divider(color = Color(0xFF222222))
+        HorizontalDivider(color = Color(0xFF222222))
 
         if (state.isLoading) {
             Column(
@@ -153,7 +153,7 @@ fun OrderCard(order: Order) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(date, color = Color.Gray, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Divider(color = Color(0xFF222222))
+            HorizontalDivider(color = Color(0xFF222222))
             Spacer(modifier = Modifier.height(8.dp))
             order.items.forEach { item ->
                 Row(
@@ -171,7 +171,7 @@ fun OrderCard(order: Order) {
                 }
                 Spacer(modifier = Modifier.height(4.dp))
             }
-            Divider(color = Color(0xFF222222))
+            HorizontalDivider(color = Color(0xFF222222))
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),

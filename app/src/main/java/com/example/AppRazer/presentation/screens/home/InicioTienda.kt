@@ -100,7 +100,8 @@ data class ProductInfo(
     val extra: String = "",
     val price: String,
     val priceValue: Double,
-    val imageUrl: String
+    val imageUrl: String,
+    val category: String = ""
 )
 
 // ── ProductCard reutilizable con animación
@@ -176,7 +177,8 @@ fun GenericCarousel(
     products: List<ProductInfo>,
     navController: NavController,
     height: Int = 650,
-    paddingH: Int = 25
+    paddingH: Int = 25,
+    wishlistViewModel: com.example.AppRazer.presentation.screens.wishlist.WishlistViewModel = hiltViewModel()
 ) {
     val pagerState = rememberPagerState { products.size }
     Column(modifier = Modifier.fillMaxSize()) {
@@ -185,6 +187,7 @@ fun GenericCarousel(
             contentPadding = PaddingValues(horizontal = paddingH.dp),
             modifier = Modifier.height(height.dp)
         ) { page ->
+            val product = products[page]
             Card(
                 shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)),
@@ -203,21 +206,42 @@ fun GenericCarousel(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(products[page].imageUrl)
-                            .crossfade(true)
-                            .scale(Scale.FILL)
-                            .build(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(350.dp)
-                            .clickable {},
-                        contentScale = ContentScale.Crop
-                    )
+                    Box {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(product.imageUrl)
+                                .crossfade(true)
+                                .scale(Scale.FILL)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(350.dp)
+                                .clickable {},
+                            contentScale = ContentScale.Crop
+                        )
+                        com.example.AppRazer.presentation.components.HeartButton(
+                            isFavorite = com.example.AppRazer.presentation.screens.wishlist.WishlistState.isFavorite(
+                                product.id
+                            ),
+                            onClick = {
+                                wishlistViewModel.toggleFavorite(
+                                    com.example.AppRazer.data.remote.firebase.firestore.WishlistItem(
+                                        id = product.id,
+                                        name = product.title,
+                                        price = product.price,
+                                        priceValue = product.priceValue,
+                                        imageUrl = product.imageUrl
+                                    )
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .align(Alignment.TopEnd)
+                        )
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
-                    ProductCard(products[page], navController = navController)
+                    ProductCard(product, navController = navController)
                 }
             }
         }
@@ -359,7 +383,10 @@ fun CarouselCard(carouselItems: List<CarouselItem>) {
 
 // ── CarouselCardSegundo
 @Composable
-fun CarouselCardSegundo(navController: NavController) {
+fun CarouselCardSegundo(
+    navController: NavController,
+    wishlistViewModel: com.example.AppRazer.presentation.screens.wishlist.WishlistViewModel = hiltViewModel()
+) {
     val products = listOf(
         ProductInfo(
             id = "blade14",
@@ -425,7 +452,7 @@ fun CarouselCardSegundo(navController: NavController) {
 
     LaunchedEffect(pagerState) {
         while (true) {
-            delay(3500)
+            delay(3000)
             if (!pagerState.isScrollInProgress) {
                 val nextPage = (pagerState.currentPage + 1) % products.size
                 pagerState.animateScrollToPage(
@@ -448,6 +475,7 @@ fun CarouselCardSegundo(navController: NavController) {
                     .height(640.dp)
                     .align(Alignment.Center)
             ) { page ->
+                val product = products[page]
                 Card(
                     shape = RoundedCornerShape(10.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF222222)),
@@ -466,19 +494,40 @@ fun CarouselCardSegundo(navController: NavController) {
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(products[page].imageUrl).crossfade(true).scale(Scale.FILL)
-                                .build(),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(350.dp)
-                                .clickable {},
-                            contentScale = ContentScale.Crop
-                        )
+                        Box {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(product.imageUrl).crossfade(true).scale(Scale.FILL)
+                                    .build(),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(350.dp)
+                                    .clickable {},
+                                contentScale = ContentScale.Crop
+                            )
+                            com.example.AppRazer.presentation.components.HeartButton(
+                                isFavorite = com.example.AppRazer.presentation.screens.wishlist.WishlistState.isFavorite(
+                                    product.id
+                                ),
+                                onClick = {
+                                    wishlistViewModel.toggleFavorite(
+                                        com.example.AppRazer.data.remote.firebase.firestore.WishlistItem(
+                                            id = product.id,
+                                            name = product.title,
+                                            price = product.price,
+                                            priceValue = product.priceValue,
+                                            imageUrl = product.imageUrl
+                                        )
+                                    )
+                                },
+                                modifier = Modifier
+                                    .padding(12.dp)
+                                    .align(Alignment.TopEnd)
+                            )
+                        }
                         Spacer(modifier = Modifier.height(10.dp))
-                        ProductCard(products[page], navController)
+                        ProductCard(product, navController)
                     }
                 }
             }

@@ -17,6 +17,32 @@ class CartRepository @Inject constructor() {
         db.collection("users").document(it).collection("cart")
     }
 
+    // ── Fusiona el carrito de invitado con el de Firestore al loguearse ──
+    suspend fun mergeGuestCart(guestItems: List<CartItem>): Result<Unit> {
+        return try {
+            if (guestItems.isEmpty()) return Result.success(Unit)
+
+            val currentCart = getCart().getOrDefault(emptyList())
+            val merged = currentCart.toMutableList()
+
+            guestItems.forEach { guestItem ->
+                val existingIndex = merged.indexOfFirst { it.id == guestItem.id }
+                if (existingIndex != -1) {
+                    val existing = merged[existingIndex]
+                    merged[existingIndex] =
+                        existing.copy(quantity = existing.quantity + guestItem.quantity)
+                } else {
+                    merged.add(guestItem)
+                }
+            }
+
+            merged.forEach { item -> addItem(item) }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     // ── Guardar item en Firestore ─────────────────────────────────
     suspend fun addItem(item: CartItem): Result<Unit> {
         return try {

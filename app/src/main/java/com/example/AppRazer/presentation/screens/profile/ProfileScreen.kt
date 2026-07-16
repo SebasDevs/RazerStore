@@ -30,10 +30,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LocationOn
@@ -42,7 +42,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -113,7 +113,11 @@ fun ProfileScreen(
                     .padding(8.dp)
                     .align(Alignment.TopStart)
             ) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.White)
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = Color.White
+                )
             }
 
             Column(
@@ -216,15 +220,17 @@ fun ProfileScreen(
                 ProfileOption(
                     icon = Icons.Default.Favorite, title = "Favoritos",
                     subtitle = "Productos guardados"
-                ) { }
+                ) {
+                    navController.navigate(Screen.Wishlist.route)
+                }
                 ProfileOption(
                     icon = Icons.Default.LocationOn, title = "Mis direcciones",
                     subtitle = "Gestionar direcciones de envío"
-                ) { }
+                ) { navController.navigate(Screen.Addresses.route) }
                 ProfileOption(
                     icon = Icons.Default.CreditCard, title = "Métodos de pago",
                     subtitle = "Tarjetas guardadas"
-                ) { }
+                ) { navController.navigate(Screen.PaymentMethods.route) }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -236,15 +242,15 @@ fun ProfileScreen(
                 ProfileOption(
                     icon = Icons.Default.Notifications, title = "Notificaciones",
                     subtitle = "Gestionar alertas"
-                ) { }
+                ) { navController.navigate(Screen.Notifications.route) }
                 ProfileOption(
                     icon = Icons.Default.Security, title = "Seguridad",
                     subtitle = "Contraseña y privacidad"
-                ) { }
+                ) { navController.navigate(Screen.Security.route) }
                 ProfileOption(
                     icon = Icons.Default.Language, title = "Idioma y región",
                     subtitle = "Español - España"
-                ) { }
+                ) { navController.navigate(Screen.Settings.route) }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -269,7 +275,11 @@ fun ProfileScreen(
                     border = BorderStroke(1.dp, Color.Red),
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
                 ) {
-                    Icon(Icons.Default.ExitToApp, contentDescription = null, tint = Color.Red)
+                    Icon(
+                        Icons.AutoMirrored.Filled.ExitToApp,
+                        contentDescription = null,
+                        tint = Color.Red
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Cerrar sesión", color = Color.Red, fontWeight = FontWeight.Bold)
                 }
@@ -346,5 +356,5 @@ fun ProfileOption(
         Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.Gray)
     }
 
-    Divider(color = Color(0xFF111111), thickness = 1.dp)
+    HorizontalDivider(color = Color(0xFF111111), thickness = 1.dp)
 }
